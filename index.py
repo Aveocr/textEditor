@@ -18,19 +18,11 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button 
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
-
+from kivy.uix.modalview import ModalView
+from kivy.uix.image import Image
 
 from os import system, popen
 from os import getcwd
-
-work = True
-class Error(Widget):
-	def build(self):
-		pass
-
-class AboutMe(Widget):
-	def build(self):
-		return Label(text="Привет, я создатель этой проги Денис! :3")
 
 class IDE(App):
 	def openFile(self, argc):
@@ -62,6 +54,15 @@ class IDE(App):
 			result = "Error: file not found"
 		finally:
 			self.check.text = result
+
+	def aboutme(self, instance):
+		view = ModalView(size_hint=(None, None), size= (320, 240))
+		box = GridLayout(cols = 1, size_hint=(.33, 1))
+		box.add_widget(Image(source='icon/about.png', size_hint=(.9, .8)))
+		box.add_widget(Label(text="Привет, создатель этой проги Денис! :3"))
+		box.add_widget(Label(text="Спасибо сайту: https://icons8.ru"))
+		view.add_widget(box)
+		return view.open()
 	def build(self):
 		root = BoxLayout(
 			orientation="vertical",
@@ -69,7 +70,8 @@ class IDE(App):
 		self.nameFile = TextInput(
 			text="%s/main.py" % getcwd(),
 			size_hint=[1, .1],
-			background_color=[77, 77, 77, 1]
+			background_color=[77, 77, 77, 1],
+			multiline = False
 			)
 		root.add_widget(self.nameFile)
 		button = GridLayout(cols = 4, size_hint=[1, .07])
@@ -94,7 +96,7 @@ class IDE(App):
 		button.add_widget(
 			Button(
 				text="about me",
-				on_press=AboutMe()
+				on_press=self.aboutme
 				)
 			)
 		root.add_widget(button)
