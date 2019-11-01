@@ -24,11 +24,11 @@ from os import system, popen
 from os import getcwd
 
 work = True
-class Error(App):
+class Error(Widget):
 	def build(self):
 		pass
 
-class AboutMe(App):
+class AboutMe(Widget):
 	def build(self):
 		return Label(text="Привет, я создатель этой проги Денис! :3")
 
@@ -62,10 +62,6 @@ class IDE(App):
 			result = "Error: file not found"
 		finally:
 			self.check.text = result
-	def aboutme(self, ):
-		root=Widget()
-		root.add_widget(Label(text="Привет, меня зовут денис!"))
-		return root
 	def build(self):
 		root = BoxLayout(
 			orientation="vertical",
@@ -98,7 +94,7 @@ class IDE(App):
 		button.add_widget(
 			Button(
 				text="about me",
-				on_press=self.aboutme
+				on_press=AboutMe()
 				)
 			)
 		root.add_widget(button)
