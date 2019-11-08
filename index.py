@@ -19,12 +19,52 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
-from kivy.uix.image import Image
+# from kivy.uix.image import Image
+from kivy.uix.dropdown import DropDown
 
-from os import system, popen
-from os import getcwd
+
+
+from os import system, popen, getcwd
 
 class IDE(App):
+	
+	langLexer = CythonLexer()
+	
+	def build(self):
+		root = BoxLayout(orientation="vertical", padding=5)
+		self.nameFile = TextInput(text="%s/main.py" % getcwd(), size_hint=[1, .1], background_color=[77, 77, 77, 1], multiline = False)
+		root.add_widget(self.nameFile)
+		
+
+
+		button = GridLayout(cols = 4, size_hint=[1, .07])
+		## The drop menu starts here 
+
+		dropmenu = DropDown()
+		buttonForFile = Button(text="Save", size_hint_y=None, height=40, on_press=self.saveFile)
+		dropmenu.add_widget(buttonForFile)
+		buttonForFile = Button(text="Open", size_hint_y=None, height=40, on_press=self.openFile)
+		dropmenu.add_widget(buttonForFile)
+		
+
+		mainbutton = Button(text="File", size_hint=(1, .07))
+		mainbutton.bind(on_release=dropmenu.open)
+		button.add_widget(mainbutton)
+		
+		## The drop menu ends here
+		button.add_widget(Button(text="Compile", on_press=self.compile))
+		button.add_widget(Button(text="clean",on_press=self.clean))
+		root.add_widget(button)
+		self.code = CodeInput(text = "", lexer = CythonLexer(),
+)
+		button.add_widget(Button(text="about me", on_press=self.aboutme))
+
+		root.add_widget(self.code)
+
+		self.check = TextInput(text="", size_hint=[1, .3],background_color=[77, 77, 77, 1])
+		root.add_widget(self.check)
+		return root
+
 	def openFile(self, argc):
 		try:
 			with open(self.nameFile.text) as file:
@@ -45,7 +85,7 @@ class IDE(App):
 		finally:
 			self.check.text = result
 
-	def save(self, argc):
+	def saveFile(self, argc):
 		try:
 			with open(self.nameFile.text, "w") as file:
 				result = "Yeahh. File saved"
@@ -55,7 +95,10 @@ class IDE(App):
 		finally:
 			self.check.text = result
 
-	def aboutme(self, instance):
+	def clean(self, argc):
+		self.check.text = ""
+
+	def aboutme(self, argc):
 		view = ModalView(size_hint=(None, None), size= (320, 240))
 		box = GridLayout(cols = 1, size_hint=(.33, 1))
 		box.add_widget(Image(source='icon/about.png', size_hint=(.9, .8)))
@@ -63,62 +106,6 @@ class IDE(App):
 		box.add_widget(Label(text="Спасибо сайту: https://icons8.ru"))
 		view.add_widget(box)
 		return view.open()
-	def build(self):
-		root = BoxLayout(
-			orientation="vertical",
-			padding=5)
-		self.nameFile = TextInput(
-			text="%s/main.py" % getcwd(),
-			size_hint=[1, .1],
-			background_color=[77, 77, 77, 1],
-			multiline = False
-			)
-		root.add_widget(self.nameFile)
-		button = GridLayout(cols = 4, size_hint=[1, .07])
-		button.add_widget(
-			Button(
-				text="Open",
-				on_press = self.openFile
-				)
-			)
-		button.add_widget(
-			Button(
-				text="Compile",
-				on_press=self.compile
-				)
-			)
-		button.add_widget(
-			Button(
-				text="Save",
-				on_press=self.save
-				)
-			)
-		button.add_widget(
-			Button(
-				text="about me",
-				on_press=self.aboutme
-				)
-			)
-		root.add_widget(button)
-		self.code = CodeInput(
-			text = "1",
-			lexer = CythonLexer(),
-			)
-
-		root.add_widget(self.code)
-
-		self.check = TextInput(
-				text="",
-				size_hint=[1, .3],
-				background_color=[77, 77, 77, 1]
-			)
-		root.add_widget(self.check)
-		return root
-
-
 
 if __name__ == '__main__':
 	IDE().run()
-else :
-
-	Error().run() 
